@@ -85,17 +85,18 @@ class Output:
             status = "Delayed"
 
         return {
-            "pickup": pickup,
-            "store": store,
-            "delivery": delivery,
-            "vehicle": vehicle,
-            "weight": weight,
-            "distance": distance,
-            "hours": hours,
-            "minutes": minutes,
-            "accuracy": "95%",
-            "status": status
-        }
+    "pickup": pickup,
+    "store": store,
+    "delivery": delivery,
+    "vehicle": vehicle,
+    "weight": weight,
+    "distance": distance,
+    "hours": hours,
+    "minutes": minutes,
+    "total_seconds": (hours * 60 + minutes) * 60,
+    "accuracy": "95%",
+    "status": status
+}
 
 
 @app.route("/")
