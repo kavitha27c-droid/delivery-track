@@ -93,3 +93,194 @@ Predict Delivery
 
 </body>
 </html>
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Prediction Result</title>
+
+<style>
+
+body{
+
+font-family:Arial;
+
+background:#f2f2f2;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:100vh;
+
+}
+
+.box{
+
+background:white;
+
+padding:30px;
+
+width:500px;
+
+border-radius:10px;
+
+box-shadow:0px 0px 15px gray;
+
+}
+
+h2{
+
+text-align:center;
+
+color:green;
+
+}
+
+table{
+
+width:100%;
+
+}
+
+td{
+
+padding:8px;
+
+}
+
+.status{
+
+font-size:20px;
+
+color:green;
+
+font-weight:bold;
+
+text-align:center;
+
+}
+
+button{
+
+width:100%;
+
+padding:12px;
+
+margin-top:20px;
+
+background:green;
+
+color:white;
+
+border:none;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>SMART DELIVERY RESULT</h2>
+
+<table>
+
+<tr>
+
+<td>Pickup Location</td>
+
+<td>{{result.pickup}}</td>
+
+</tr>
+
+<tr>
+
+<td>Retail Store</td>
+
+<td>{{result.store}}</td>
+
+</tr>
+
+<tr>
+
+<td>Delivery Location</td>
+
+<td>{{result.delivery}}</td>
+
+</tr>
+
+<tr>
+
+<td>Vehicle</td>
+
+<td>{{result.vehicle}}</td>
+
+</tr>
+
+<tr>
+
+<td>Package Weight</td>
+
+<td>{{result.weight}} Kg</td>
+
+</tr>
+
+<tr>
+
+<td>Distance</td>
+
+<td>{{result.distance}} Km</td>
+
+</tr>
+
+<tr>
+
+<td>Estimated Time</td>
+
+<td>{{result.hours}} Hours {{result.minutes}} Minutes</td>
+
+</tr>
+
+<tr>
+
+<td>Prediction Accuracy</td>
+
+<td>{{result.accuracy}}</td>
+
+</tr>
+
+</table>
+
+<p class="status">
+
+Delivery Status : {{result.status}}
+
+</p>
+
+<form action="/">
+
+<button>
+
+Predict Again
+
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>
