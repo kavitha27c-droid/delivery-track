@@ -157,7 +157,12 @@ cursor:pointer;
 <td>{{result.hours}} Hours {{result.minutes}} Minutes</td>
 
 </tr>
-
+<tr>
+    <td>Delivery Timer</td>
+    <td>
+        <span id="timer"></span>
+    </td>
+</tr>
 <tr>
 
 <td>Prediction Accuracy</td>
@@ -185,6 +190,36 @@ Predict Again
 </form>
 
 </div>
+
+<script>
+
+let hours = {{ result.hours }};
+let minutes = {{ result.minutes }};
+
+let totalSeconds = (hours * 60 + minutes) * 60;
+
+function startTimer(){
+
+    let hrs = Math.floor(totalSeconds / 3600);
+    let mins = Math.floor((totalSeconds % 3600) / 60);
+    let secs = totalSeconds % 60;
+
+    document.getElementById("timer").innerHTML =
+        String(hrs).padStart(2,'0') + ":" +
+        String(mins).padStart(2,'0') + ":" +
+        String(secs).padStart(2,'0');
+
+    if(totalSeconds > 0){
+        totalSeconds--;
+        setTimeout(startTimer,1000);
+    } else {
+        document.getElementById("timer").innerHTML = "Delivery Completed Successfully!";
+    }
+}
+
+startTimer();
+
+</script>
 
 </body>
 
