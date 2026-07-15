@@ -14,22 +14,45 @@
         .delayed { background-color: #f8d7da; color: #721c24; }
         .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #0056b3; }
         .back-btn:hover { text-decoration: underline; }
+        .timer-box{
+    margin-top:20px;
+    text-align:center;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#f8f9fa;
+}
+
+#timer{
+    font-size:36px;
+    color:red;
+    font-weight:bold;
+}
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>Delivery Prediction</h2>
-        <hr>
-        
-        <!-- Flask context injection -->
-        <p><strong>Route:</strong> From <em>{{ result.pickup }}</em> ({{ result.store }}) to <em>{{ result.delivery }}</em></p>
-        <p><strong>Vehicle:</strong> {{ result.vehicle }}</p>
-        <p><strong>Weight:</strong> {{ result.weight }} kg | <strong>Distance:</strong> {{ result.distance }} km</p>
-        
-        <h3>Estimated Time:</h3>
-        <p style="font-size: 24px; margin: 10px 0; font-weight: bold;">
-            {{ result.hours }}h {{ result.minutes }}m
-        </p>
+       <h2>Prediction Result</h2>
+
+<p>Pickup Location : {{ result.pickup }}</p>
+
+<p>Retail Store : {{ result.store }}</p>
+
+<p>Delivery Location : {{ result.delivery }}</p>
+
+<p>
+Estimated Delivery Time :
+{{ result.hours }} Hours {{ result.minutes }} Minutes
+</p>
+
+<!-- ADD HERE -->
+<div class="timer-box">
+
+    <h3>Delivery Countdown</h3>
+
+    <h1 id="timer">00:00:00</h1>
+
+</div>
         
         <!-- Jinja logic block to dynamically render status color -->
         <p><strong>Status:</strong> 
@@ -45,5 +68,42 @@
         <!-- Returns to the home template -->
         <a href="/" class="back-btn">← Estimate Another Delivery</a>
     </div>
+    <script>
+
+let totalSeconds = {{ result.total_seconds }};
+
+function updateTimer() {
+
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+
+    document.getElementById("timer").innerHTML =
+        String(hours).padStart(2,'0') + ":" +
+        String(minutes).padStart(2,'0') + ":" +
+        String(seconds).padStart(2,'0');
+
+    if (totalSeconds <= 0) {
+
+        clearInterval(countdown);
+
+        document.getElementById("timer").innerHTML = "Delivered ✅";
+
+        alert("Package Delivered Successfully!");
+
+    }
+
+    totalSeconds--;
+
+}
+
+updateTimer();
+
+let countdown = setInterval(updateTimer, 1000);
+
+</script>
+
+</body>
+</html>
 </body>
 </html>
