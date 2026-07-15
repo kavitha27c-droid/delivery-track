@@ -99,12 +99,12 @@ class Output:
 }
 
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+@app.route("/results")
+def results():
+    return render_template("results.html")
 
-@app.route("/predict", methods=["POST"])
-def predict():
+@app.route("/results", methods=["POST"])
+def results():
 
     loader = DataLoader()
     loader.load_data()
