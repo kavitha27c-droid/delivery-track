@@ -2,108 +2,196 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Prediction Result</title>
+    <!-- Tailwind CSS for modern structure -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 50px auto; max-width: 500px; line-height: 1.6; }
-        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { color: #333; margin-top: 0; }
-        .status { font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; }
-        .on-time { background-color: #d4edda; color: #155724; }
-        .slight-delay { background-color: #fff3cd; color: #856404; }
-        .delayed { background-color: #f8d7da; color: #721c24; }
-        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #0056b3; }
-        .back-btn:hover { text-decoration: underline; }
-        .timer-box{
-    margin-top:20px;
-    text-align:center;
-    padding:15px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    background:#f8f9fa;
-}
+        /* Setup the 3D space perspective */
+        body {
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #03001e 100%);
+            min-height: 100vh;
+            perspective: 1200px;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
 
-#timer{
-    font-size:36px;
-    color:red;
-    font-weight:bold;
-}
+        /* 3D Mobile Device Chassis */
+        .phone-container {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
+            box-shadow: 
+                0 30px 50px rgba(0, 0, 0, 0.6),
+                inset 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Glassmorphism Inner Screen styling */
+        .glass-screen {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Volumetric 3D Button Style */
+        .btn-3d {
+            position: relative;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 
+                0 0 0 1px #4338ca,
+                0 4px 0 0 #4338ca,
+                0 8px 16px rgba(99, 102, 241, 0.3);
+            transition: all 0.1s ease;
+            transform: translateY(-4px);
+        }
+
+        .btn-3d:hover {
+            background: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 0 0 1px #4338ca,
+                0 5px 0 0 #4338ca,
+                0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-3d:active {
+            transform: translateY(0px);
+            box-shadow: 
+                0 0 0 1px #4338ca,
+                0 0px 0 0 #4338ca,
+                0 2px 4px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Subtle parallax floating bubbles in background */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
-<body>
-    <div class="card">
-       <h2>Prediction Result</h2>
+<body class="flex justify-center items-center min-h-screen p-4">
 
-<p>Pickup Location : {{ result.pickup }}</p>
+    <!-- Interactive Background Bubbles -->
+    <div class="bubble w-[400px] h-[400px] top-10 left-10 animate-pulse"></div>
+    <div class="bubble w-[300px] h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
 
-<p>Retail Store : {{ result.store }}</p>
-
-<p>Delivery Location : {{ result.delivery }}</p>
-
-<p>
-Estimated Delivery Time :
-{{ result.hours }} Hours {{ result.minutes }} Minutes
-</p>
-
-<!-- ADD HERE -->
-<div class="timer-box">
-
-    <h3>Delivery Countdown</h3>
-
-    <h1 id="timer">00:00:00</h1>
-
-</div>
+    <!-- 3D Phone Chassis Wrapper -->
+    <div id="phone" class="phone-container w-full max-w-sm h-[780px] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
         
-        <!-- Jinja logic block to dynamically render status color -->
-        <p><strong>Status:</strong> 
-            <span class="status 
-                {% if result.status == 'On Time' %}on-time
-                {% elif result.status == 'Slight Delay' %}slight-delay
-                {% else %}delayed{% endif %}">
-                {{ result.status }}
-            </span>
-        </p>
-        <p><small>Prediction Confidence: {{ result.accuracy }}</small></p>
-        
-        <!-- Returns to the home template -->
-        <a href="/" class="back-btn">← Estimate Another Delivery</a>
+        <!-- Phone Camera Notch -->
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-full z-30 flex items-center justify-center border border-slate-800/50">
+            <div class="w-3 h-3 rounded-full bg-slate-900 border border-slate-800 mr-2 flex justify-center items-center">
+                <div class="w-1 h-1 rounded-full bg-blue-500/50"></div>
+            </div>
+            <div class="w-12 h-1 bg-slate-800 rounded-full"></div>
+        </div>
+
+        <!-- Glassmorphic Screen Layer -->
+        <div class="glass-screen flex-1 rounded-[40px] px-6 pt-12 pb-6 flex flex-col justify-between overflow-y-auto no-scrollbar z-20">
+            
+            <!-- App Header -->
+            <div class="text-center mt-3">
+                <div class="inline-flex p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 mb-2 shadow-lg shadow-emerald-500/10">
+                    <span class="text-3xl">🎉</span>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight text-white">Prediction Complete</h2>
+                <p class="text-[11px] text-emerald-400 mt-0.5">Calculations processed successfully</p>
+            </div>
+
+            <!-- Result Card Viewport -->
+            <div class="my-6 space-y-4">
+                
+                <!-- Large Display for Predicted Delivery Time -->
+                <div class="bg-slate-950/60 p-5 rounded-2xl border border-indigo-500/20 text-center shadow-inner relative overflow-hidden">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Travel Duration</p>
+                    <h1 class="text-4xl font-extrabold text-indigo-400 my-3">
+                        {{ result.hours }}h {{ result.minutes }}m
+                    </h1>
+                    
+                    <!-- Color-Coded Dynamic Status Badge -->
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 inline-block">
+                        Status: {{ result.status }}
+                    </span>
+                </div>
+
+                <!-- Parameters breakdown -->
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-white/5 text-xs space-y-3">
+                    <h3 class="text-[10px] uppercase tracking-wider font-bold text-slate-400 border-b border-white/5 pb-2">Details</h3>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">📍 Route:</span>
+                        <span class="text-white font-medium text-right truncate max-w-[180px]">{{ result.store }} ➔ {{ result.delivery }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">🚲 Transport:</span>
+                        <span class="text-white font-medium">{{ result.vehicle }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">📏 Distance:</span>
+                        <span class="text-white font-medium">{{ result.distance }} km</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">⚖️ Weight:</span>
+                        <span class="text-white font-medium">{{ result.weight }} kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Re-calculate Action Button -->
+            <div class="pt-2">
+                <a href="/" class="btn-3d w-full text-white font-bold py-3 text-sm flex items-center justify-center gap-2">
+                    <span>🔄</span> Run New Prediction
+                </a>
+            </div>
+
+            <!-- Device Navigation virtual indicator pill -->
+            <div class="w-24 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
+        </div>
     </div>
+
+    <!-- JavaScript to power the dynamic 3D tilting mechanics -->
     <script>
+        const phone = document.getElementById('phone');
+        
+        // Dynamic tilt mapping function
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            // Calculate distance ratios relative to device screen midpoints (Max 12deg tilt)
+            const rotateX = ((clientY - centerY) / centerY) * -12; 
+            const rotateY = ((clientX - centerX) / centerX) * 12;
 
-let totalSeconds = {{ result.total_seconds }};
+            phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
 
-function updateTimer() {
+        // Softly reset layout rotation back to center position when mouse exits
+        document.addEventListener('mouseleave', () => {
+            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+        
+        // Touch orientation support for physical mobile testing
+        phone.addEventListener('touchmove', (e) => {
+            if(e.touches.length === 1) {
+                const touch = e.touches[0];
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const rotateX = ((touch.clientY - centerY) / centerY) * -15;
+                const rotateY = ((touch.clientX - centerX) / centerX) * 15;
+                phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }
+        }, { passive: true });
 
-    let hours = Math.floor(totalSeconds / 3600);
-    let minutes = Math.floor((totalSeconds % 3600) / 60);
-    let seconds = totalSeconds % 60;
-
-    document.getElementById("timer").innerHTML =
-        String(hours).padStart(2,'0') + ":" +
-        String(minutes).padStart(2,'0') + ":" +
-        String(seconds).padStart(2,'0');
-
-    if (totalSeconds <= 0) {
-
-        clearInterval(countdown);
-
-        document.getElementById("timer").innerHTML = "Delivered ✅";
-
-        alert("Package Delivered Successfully!");
-
-    }
-
-    totalSeconds--;
-
-}
-
-updateTimer();
-
-let countdown = setInterval(updateTimer, 1000);
-
-</script>
-
-</body>
-</html>
+        phone.addEventListener('touchend', () => {
+            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
 </body>
 </html>
