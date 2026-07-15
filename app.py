@@ -8,55 +8,48 @@ app = Flask(__name__)
 
 
 class DataLoader:
-
     def load_data(self):
         try:
             data = pd.read_csv("retail_delivery.csv")
             return data
-        except:
+        except Exception:
+            # Silently handle missing CSV files and return None
             return None
 
 
 class Validator:
-
     def validate(self, weight, distance):
-
         if weight <= 0:
             return False
-
         if distance <= 0:
             return False
-
         return True
 
 
 class DataProcessor:
-
     def preprocess(self, vehicle):
-
         vehicle_dict = {
             "Bike": 1,
             "Car": 2,
             "Van": 3
         }
-
         return vehicle_dict.get(vehicle, 1)
 
 
 class DeliveryPrediction:
-
     def predict(self, distance, weight, vehicle):
-
         total_minutes = (distance * 2) + (weight * 5)
 
         if vehicle == 1:
             total_minutes -= 10
-
         elif vehicle == 2:
             total_minutes += 20
-
         else:
             total_minutes += 40
+
+        # Prevent delivery calculations from going below 0 minutes
+        if total_minutes < 0:
+            total_minutes = 0
 
         hours = int(total_minutes // 60)
         minutes = int(total_minutes % 60)
@@ -65,16 +58,7 @@ class DeliveryPrediction:
 
 
 class Output:
-
-    def display(self,
-                pickup,
-                store,
-                delivery,
-                vehicle,
-                weight,
-                distance,
-                prediction):
-
+    def display(self, pickup, store, delivery, vehicle, weight, distance, prediction):
         hours, minutes = prediction
         total_time = (hours * 60) + minutes
 
@@ -86,18 +70,18 @@ class Output:
             status = "Delayed"
 
         return {
-    "pickup": pickup,
-    "store": store,
-    "delivery": delivery,
-    "vehicle": vehicle,
-    "weight": weight,
-    "distance": distance,
-    "hours": hours,
-    "minutes": minutes,
-    "total_seconds": (hours * 60 + minutes) * 60,
-    "accuracy": "95%",
-    "status": status
-}
+            "pickup": pickup,
+            "store": store,
+            "delivery": delivery,
+            "vehicle": vehicle,
+            "weight": weight,
+            "distance": distance,
+            "hours": hours,
+            "minutes": minutes,
+            "total_seconds": (hours * 60 + minutes) * 60,
+            "accuracy": "95%",
+            "status": status
+        }
 
 
 @app.route("/")
@@ -107,21 +91,25 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-
-    loader = DataLoader()
-    loader.load_data()
-
-    pickup = request.form["pickup"]
-    store = request.form["store"]
-    delivery = request.form["delivery"]
-    vehicle = request.form["vehicle"]
-    weight = float(request.form["weight"])
-    distance = float(request.form["distance"])
+    try:
+        pickup = request.form["pickup"]
+        store = request.form["store"]
+        delivery = request.form["delivery"]
+        vehicle = request.form["vehicle"]
+        
+        # Safely convert form data to float to prevent server-side crashes
+        weight = float(request.form["weight"])
+        distance = float(request.form["distance"])
+    except (KeyError, ValueError):
+        return "Please provide valid numeric inputs for all fields.", 400
 
     validate = Validator()
+    if not validate.validate(weight, distance):
+        return "Invalid Weight or Distance. Values must be greater than 0.", 400
 
-    if validate.validate(weight, distance) == False:
-        return "Invalid Weight or Distance"
+    # Read from dataset if available
+    loader = DataLoader()
+    loader.load_data()
 
     processor = DataProcessor()
     vehicle_code = processor.preprocess(vehicle)
