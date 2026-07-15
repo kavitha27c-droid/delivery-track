@@ -4,16 +4,6 @@ import pandas as pd
 app = Flask(__name__)
 
 
-class DataLoader:
-    # Keeps this helper intact in case you plan to use it later
-    def load_data(self):
-        try:
-            data = pd.read_csv("retail_delivery.csv")
-            return data
-        except Exception:
-            return None
-
-
 class Validator:
     def validate(self, weight, distance):
         if weight <= 0 or distance <= 0:
@@ -82,9 +72,6 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Removed loader.load_data() since the CSV data wasn't being used.
-    # If you need to check if the file exists, you can handle it here.
-
     pickup = request.form["pickup"]
     store = request.form["store"]
     delivery = request.form["delivery"]
@@ -113,7 +100,7 @@ def predict():
         prediction
     )
 
-    # Fixed: Corrected the 4-space indentation level here
+    # Renders results.html and feeds it the 'result' dict variable
     return render_template("results.html", result=result)
 
 
