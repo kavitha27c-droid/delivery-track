@@ -99,12 +99,13 @@ class Output:
 }
 
 
-@app.route("/results")
-def results():
-    return render_template("results.html")
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-@app.route("/results", methods=["POST"])
-def results():
+
+@app.route("/predict", methods=["POST"])
+def predict():
 
     loader = DataLoader()
     loader.load_data()
@@ -138,10 +139,7 @@ def results():
         prediction
     )
 
-
-
-    
-    return render_template("fourth.html", result=result)
+  return render_template("fourth.html", result=result)
 
 
 if __name__ == "__main__":
