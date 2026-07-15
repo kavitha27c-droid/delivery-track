@@ -2,51 +2,236 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Retail Delivery Prediction</title>
+    <!-- Tailwind CSS for modern structure -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 50px auto; max-width: 500px; line-height: 1.6; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
-        button:hover { background-color: #218838; }
+        /* Setup the 3D space perspective */
+        body {
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #03001e 100%);
+            min-height: screen;
+            perspective: 1200px;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* 3D Mobile Device Chassis */
+        .phone-container {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out;
+            box-shadow: 
+                0 30px 50px rgba(0, 0, 0, 0.6),
+                inset 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Glassmorphism Inner Screen styling */
+        .glass-screen {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Ultra-realistic 3D Volumetric Button */
+        .btn-3d {
+            position: relative;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 
+                0 0 0 1px #047857,
+                0 4px 0 0 #047857,
+                0 8px 16px rgba(16, 185, 129, 0.3);
+            transition: all 0.1s ease;
+            transform: translateY(-4px);
+        }
+
+        .btn-3d:hover {
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 0 0 1px #047857,
+                0 5px 0 0 #047857,
+                0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-3d:active {
+            transform: translateY(0px);
+            box-shadow: 
+                0 0 0 1px #047857,
+                0 0px 0 0 #047857,
+                0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Input 3D Depth inset effect */
+        .input-3d {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.5),
+                0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .input-3d:focus {
+            border-color: #6366f1;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.5),
+                0 0 0 3px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        /* Subtle parallax floating bubbles in background */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
-<body>
-    <h2>Delivery Time Estimator</h2>
-    
-    <!-- Action points directly to your Flask /predict route -->
-    <form action="/predict" method="POST">
-        <div class="form-group">
-            <label for="pickup">Pickup Location:</label>
-            <input type="text" id="pickup" name="pickup" required placeholder="e.g. Central Warehouse">
+<body class="flex justify-center items-center min-h-screen p-4">
+
+    <!-- Interactive Background Bubbles -->
+    <div class="bubble w-[400px] h-[400px] top-10 left-10 animate-pulse"></div>
+    <div class="bubble w-[300px] h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
+
+    <!-- 3D Phone Chassis Wrapper -->
+    <div id="phone" class="phone-container w-full max-w-sm h-[780px] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
+        
+        <!-- Phone Camera Notch -->
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-full z-30 flex items-center justify-center border border-slate-800/50">
+            <div class="w-3 h-3 rounded-full bg-slate-900 border border-slate-800 mr-2 flex justify-center items-center">
+                <div class="w-1 h-1 rounded-full bg-blue-500/50"></div>
+            </div>
+            <div class="w-12 h-1 bg-slate-800 rounded-full"></div>
         </div>
-        <div class="form-group">
-            <label for="store">Store Name:</label>
-            <input type="text" id="store" name="store" required placeholder="e.g. Outlet #12">
+
+        <!-- Glassmorphic Screen Layer -->
+        <div class="glass-screen flex-1 rounded-[40px] px-6 pt-12 pb-6 flex flex-col justify-between overflow-y-auto no-scrollbar z-20">
+            
+            <!-- App Header -->
+            <div class="text-center mt-3">
+                <div class="inline-flex p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 mb-3 shadow-lg shadow-indigo-500/10">
+                    <span class="text-3xl">📦</span>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight text-white">Delivery Estimator</h2>
+                <p class="text-[11px] text-slate-400 mt-0.5">Enter details to run 3D predictive modeling</p>
+            </div>
+
+            <!-- Redesigned Main Form -->
+            <form action="/predict" method="POST" class="space-y-4 my-4 flex-1 flex flex-col justify-center">
+                
+                <!-- Pickup field -->
+                <div class="space-y-1">
+                    <label for="pickup" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1.5">
+                        <span>📍</span> Pickup Location
+                    </label>
+                    <input type="text" id="pickup" name="pickup" required placeholder="e.g. Central Warehouse" 
+                           class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-white placeholder-slate-500">
+                </div>
+
+                <!-- Store field -->
+                <div class="space-y-1">
+                    <label for="store" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1.5">
+                        <span>🏪</span> Store Name
+                    </label>
+                    <input type="text" id="store" name="store" required placeholder="e.g. Outlet #12" 
+                           class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-white placeholder-slate-500">
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="space-y-1">
+                    <label for="delivery" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1.5">
+                        <span>🏠</span> Delivery Address
+                    </label>
+                    <input type="text" id="delivery" name="delivery" required placeholder="e.g. 123 Main St" 
+                           class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-white placeholder-slate-500">
+                </div>
+
+                <!-- Vehicle dropdown -->
+                <div class="space-y-1">
+                    <label for="vehicle" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1.5">
+                        <span>⚡</span> Vehicle Type
+                    </label>
+                    <select id="vehicle" name="vehicle" required class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-slate-300">
+                        <option value="Bike">🚲 Bike</option>
+                        <option value="Car">🚗 Car</option>
+                        <option value="Van">🚚 Van</option>
+                    </select>
+                </div>
+
+                <!-- Weight and Distance metrics side by side -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label for="weight" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1">
+                            ⚖️ Weight (kg)
+                        </label>
+                        <input type="number" id="weight" name="weight" step="0.1" min="0.1" required placeholder="0.0"
+                               class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-white placeholder-slate-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="distance" class="block text-[10px] uppercase tracking-wider font-bold text-slate-400 flex items-center gap-1">
+                            📏 Distance (km)
+                        </label>
+                        <input type="number" id="distance" name="distance" step="0.1" min="0.1" required placeholder="0.0"
+                               class="input-3d w-full px-3.5 py-2.5 rounded-xl text-sm text-white placeholder-slate-500">
+                    </div>
+                </div>
+
+                <!-- Main predict action trigger button -->
+                <div class="pt-2">
+                    <button type="submit" class="btn-3d w-full text-white font-bold py-3 text-sm flex items-center justify-center gap-2">
+                        <span>⚡</span> Predict Delivery Time
+                    </button>
+                </div>
+            </form>
+
+            <!-- Device Navigation virtual indicator pill -->
+            <div class="w-24 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
         </div>
-        <div class="form-group">
-            <label for="delivery">Delivery Address:</label>
-            <input type="text" id="delivery" name="delivery" required placeholder="e.g. 123 Main St">
-        </div>
-        <div class="form-group">
-            <label for="vehicle">Vehicle Type:</label>
-            <select id="vehicle" name="vehicle" required>
-                <option value="Bike">Bike</option>
-                <option value="Car">Car</option>
-                <option value="Van">Van</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="weight">Package Weight (kg):</label>
-            <input type="number" id="weight" name="weight" step="0.1" min="0.1" required>
-        </div>
-        <div class="form-group">
-            <label for="distance">Delivery Distance (km):</label>
-            <input type="number" id="distance" name="distance" step="0.1" min="0.1" required>
-        </div>
-        <button type="submit">Predict Delivery Time</button>
-    </form>
+    </div>
+
+    <!-- JavaScript to power the dynamic 3D tilting mechanics -->
+    <script>
+        const phone = document.getElementById('phone');
+        
+        // Dynamic tilt mapping function
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            // Calculate distance ratios relative to device screen midpoints
+            const rotateX = ((clientY - centerY) / centerY) * -12; // Cap angle to 12 degrees
+            const rotateY = ((clientX - centerX) / centerX) * 12;
+
+            phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        // Softly reset layout rotation back to home position when mouse exits
+        document.addEventListener('mouseleave', () => {
+            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+        
+        // Touch orientation support for physical mobile testing
+        phone.addEventListener('touchmove', (e) => {
+            if(e.touches.length === 1) {
+                const touch = e.touches[0];
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const rotateX = ((touch.clientY - centerY) / centerY) * -15;
+                const rotateY = ((touch.clientX - centerX) / centerX) * 15;
+                phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            }
+        }, { passive: true });
+
+        phone.addEventListener('touchend', () => {
+            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
 </body>
 </html>
