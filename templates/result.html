@@ -1,204 +1,715 @@
+ fourth page
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Result UI</title>
+    <!-- FontAwesome for iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Clean geometric sans font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #cbd5e1;
+            --bg-device: #f8fafc;
+            --primary-green: #047857;
+            --light-green: #10b981;
+            --text-main: #0f172a;
+            --text-alt: #64748b;
+            --white: #ffffff;
+            
+            /* High-fidelity 3D claymorphic physics styling shadows */
+            --shadow-3d-button: 0 10px 20px rgba(4, 120, 87, 0.3), inset 0 -4px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.3);
+            --shadow-3d-button-hover: 0 4px 6px rgba(4, 120, 87, 0.2), inset 0 -1.5px 0 rgba(0,0,0,0.25), inset 0 1.5px 0 rgba(255,255,255,0.3);
+            --shadow-card-3d: 0 10px 25px rgba(15, 23, 42, 0.04), inset 0 -3px 0 #f1f5f9, inset 0 3px 0 #ffffff;
+            --shadow-card-3d-hover: 0 16px 30px rgba(15, 23, 42, 0.08), inset 0 -3px 0 #e2e8f0, inset 0 3px 0 #ffffff;
+        }
 
-<title>Prediction Result</title>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-<style>
+        body {
+            background-color: var(--bg-canvas);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-body{
+        /* Mobile Viewport Wrapper */
+        .phone-frame {
+            width: 100%;
+            max-width: 412px;
+            background-color: var(--bg-device);
+            border-radius: 40px;
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #ffffff;
+            position: relative;
+        }
 
-font-family:Arial;
+        /* Navigation Top Bar */
+        .top-navbar {
+            padding: 20px 22px 10px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-background:#f2f2f2;
+        .back-icon-btn {
+            width: 44px;
+            height: 44px;
+            background: #ffffff;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            border: none;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.03), inset 0 -2px 0 #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-display:flex;
+        .back-icon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 16px rgba(0,0,0,0.05), inset 0 -2px 0 #cbd5e1;
+        }
 
-justify-content:center;
+        .navbar-heading {
+            text-align: center;
+        }
 
-align-items:center;
+        .navbar-heading h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-height:100vh;
+        .navbar-subtext {
+            font-size: 13px;
+            color: var(--primary-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
 
-}
+        .navbar-subtext::before, .navbar-subtext::after {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 1.5px;
+            background: var(--primary-green);
+            opacity: 0.6;
+        }
 
-.box{
+        /* Main Scroll Viewport */
+        .scrollable-body {
+            padding: 0 16px 90px 16px;
+            overflow-y: auto;
+            max-height: 77vh;
+        }
 
-background:white;
+        .scrollable-body::-webkit-scrollbar {
+            width: 0px;
+        }
 
-padding:30px;
+        /* Hero Status Presentation Layer */
+        .success-hero-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 24px;
+            padding: 22px 20px;
+            margin-top: 12px;
+            position: relative;
+            box-shadow: var(--shadow-card-3d);
+        }
 
-width:500px;
+        .success-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #15803d;
+        }
 
-border-radius:10px;
+        .success-badge-row i {
+            font-size: 22px;
+            background: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.15);
+        }
 
-box-shadow:0px 0px 15px gray;
+        .success-badge-row h2 {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
 
-}
+        .success-hero-card p {
+            font-size: 12px;
+            color: #166534;
+            max-width: 58%;
+            line-height: 1.4;
+            margin: 12px 0 16px 0;
+        }
 
-h2{
+        /* Time Highlight Strip */
+        .eta-embedded-bar {
+            background: var(--primary-green);
+            border-radius: 16px;
+            padding: 12px 14px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(4, 120, 87, 0.2);
+        }
 
-text-align:center;
+        .eta-label {
+            font-size: 11px;
+            opacity: 0.85;
+            display: block;
+        }
 
-color:green;
+        .eta-value {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-}
+        .badge-pill-time {
+            background: #ffffff;
+            color: var(--primary-green);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-table{
+        /* 4-Column Metric Grid System */
+        .quad-metrics-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
 
-width:100%;
+        .metric-block-3d {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 12px 6px;
+            text-align: center;
+            box-shadow: var(--shadow-card-3d);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
 
-}
+        .metric-block-3d:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: var(--shadow-card-3d-hover);
+        }
 
-td{
+        .metric-block-3d i {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
 
-padding:8px;
+        .metric-block-3d .lbl {
+            font-size: 10px;
+            color: var(--text-alt);
+            display: block;
+        }
 
-}
+        .metric-block-3d .val {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-top: 2px;
+            display: block;
+            line-height: 1.2;
+        }
 
-.status{
+        /* Specification Matrix Rows */
+        .spec-details-sheet {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 8px 14px;
+            margin-top: 14px;
+            box-shadow: var(--shadow-card-3d);
+        }
 
-font-size:20px;
+        .spec-row-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+        }
 
-color:green;
+        .spec-row-item:not(:last-child) {
+            border-bottom: 1px solid #f1f5f9;
+        }
 
-font-weight:bold;
+        .spec-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            margin-right: 12px;
+        }
 
-text-align:center;
+        .spec-meta {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-}
+        .spec-meta div label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: block;
+        }
 
-button{
+        .spec-meta div span {
+            font-size: 11px;
+            color: var(--text-alt);
+        }
 
-width:100%;
+        .spec-meta .right-data {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-align: right;
+        }
 
-padding:12px;
+        /* Micro-stepper workflow timeline */
+        .workflow-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 16px 12px;
+            margin-top: 14px;
+            box-shadow: var(--shadow-card-3d);
+        }
 
-margin-top:20px;
+        .workflow-card h3 {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
 
-background:green;
+        .stepper-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding-bottom: 10px;
+        }
 
-color:white;
+        /* Connecting Bar */
+        .stepper-timeline::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: #10b981;
+            z-index: 1;
+        }
 
-border:none;
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 64px;
+            text-align: center;
+            z-index: 2;
+            cursor: pointer;
+        }
 
-font-size:16px;
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25);
+            transition: transform 0.2s ease;
+        }
 
-cursor:pointer;
+        .step-node:hover .step-circle {
+            transform: scale(1.15) rotate(10deg);
+        }
 
-}
+        .step-node label {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 8px;
+            line-height: 1.2;
+            min-height: 22px;
+            display: block;
+        }
 
-</style>
+        .step-check-mark {
+            color: #10b981;
+            font-size: 11px;
+            margin-top: 2px;
+        }
 
+        /* Action Confirmation Terminal Block */
+        .confirmation-cta-box {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 14px;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow-card-3d);
+        }
+
+        .shield-icon-3d {
+            font-size: 36px;
+            color: var(--light-green);
+            text-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .confirmation-text-block {
+            flex-grow: 1;
+        }
+
+        .confirmation-text-block h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .confirmation-text-block p {
+            font-size: 11px;
+            color: var(--text-alt);
+            line-height: 1.3;
+            margin-top: 1px;
+        }
+
+        /* Interactive 3D Submission Button Pattern */
+        .primary-3d-button {
+            background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-3d-button);
+            transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: perspective(1px) translateZ(0);
+        }
+
+        .primary-3d-button:hover {
+            transform: translateY(2.5px);
+            box-shadow: var(--shadow-3d-button-hover);
+        }
+
+        .primary-3d-button:active {
+            transform: translateY(4px);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Base Tabbar Layout */
+        .docked-tab-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -8px 25px rgba(0,0,0,0.02);
+            z-index: 30;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .tab-item i {
+            font-size: 18px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tab-item.active-tab {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .tab-item:hover i {
+            transform: translateY(-4px);
+            color: var(--light-green);
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="box">
+    <div class="phone-frame">
+        <!-- Top App Navigation -->
+        <header class="top-navbar">
+            <button class="back-icon-btn"><i class="fa-solid fa-arrow-left"></i></button>
+            <div class="navbar-heading">
+                <h1>Delivery Tracking</h1>
+                <div class="navbar-subtext">Using Retail Stores</div>
+            </div>
+            <button class="back-icon-btn" style="position: relative;">
+                <i class="fa-regular fa-bell"></i>
+                <span style="position: absolute; top: 12px; right: 13px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></span>
+            </button>
+        </header>
 
-<h2>SMART DELIVERY RESULT</h2>
+        <!-- Main Workspace Area -->
+        <div class="scrollable-body">
+            
+            <!-- Graphic Performance Status Box -->
+            <div class="success-hero-card">
+                <div class="success-badge-row">
+                    <i class="fa-solid fa-check"></i>
+                    <h2>Delivery<br>Successful!</h2>
+                </div>
+                <p>Your order has been delivered successfully using real-time data from retail stores.</p>
+                
+                <!-- Inner Timing Metric Strip -->
+               <div class="eta-embedded-bar">
+    <div>
+        <span class="eta-label">Estimated Delivery Time</span>
 
-<table>
+        <div class="eta-value">
+            <i class="fa-regular fa-clock"></i>
+            <span id="timer"></span>
+        </div>
+    </div>
 
-<tr>
-
-<td>Pickup Location</td>
-
-<td>{{result.pickup}}</td>
-
-</tr>
-
-<tr>
-
-<td>Retail Store</td>
-
-<td>{{result.store}}</td>
-
-</tr>
-
-<tr>
-
-<td>Delivery Location</td>
-
-<td>{{result.delivery}}</td>
-
-</tr>
-
-<tr>
-
-<td>Vehicle</td>
-
-<td>{{result.vehicle}}</td>
-
-</tr>
-
-<tr>
-
-<td>Package Weight</td>
-
-<td>{{result.weight}} Kg</td>
-
-</tr>
-
-<tr>
-
-<td>Distance</td>
-
-<td>{{result.distance}} Km</td>
-
-</tr>
-
-<tr>
-
-<td>Estimated Time</td>
-
-<td>{{result.hours}} Hours {{result.minutes}} Minutes</td>
-
-</tr>
-<tr>
-    <td>Delivery Timer</td>
-    <td>
-        <span id="timer"></span>
-    </td>
-</tr>
-<tr>
-
-<td>Prediction Accuracy</td>
-
-<td>{{result.accuracy}}</td>
-
-</tr>
-
-</table>
-
-<p class="status">
-
-Delivery Status : {{result.status}}
-
-</p>
-
-<form action="/">
-
-<button>
-
-Predict Again
-
-</button>
-
-</form>
-
+    <div class="badge-pill-time">
+        <i class="fa-solid fa-circle" style="font-size:6px;"></i>
+        {{ result.status }}
+    </div>
 </div>
+            </div>
 
+            <!-- Quad Metric Grid Summary Cards -->
+            <div class="quad-metrics-container">
+                <div class="metric-block-3d">
+                    <i class="fa-solid fa-location-dot" style="color: #10b981;"></i>
+                    <span class="lbl">From</span>
+                    <span class="val">{{ result.pickup }}</span>
+                </div>
+                <div class="metric-block-3d">
+                    <i class="fa-solid fa-location-arrow" style="color: #3b82f6;"></i>
+                    <span class="lbl">To</span>
+                    <span class="val">{{ result.delivery }}</span>
+                </div>
+                <div class="metric-block-3d">
+                    <i class="fa-solid fa-business-time" style="color: #8b5cf6;"></i>
+                    <span class="lbl">Est. Time</span>
+                    <span class="val" style="font-size:11px;">
+                      {{ result.hours }} Hours {{ result.minutes }} Minutes
+                    </span>
+                </div>
+                <div class="metric-block-3d">
+                    <i class="fa-solid fa-crosshairs" style="color: #f59e0b;"></i>
+                    <span class="lbl">Accuracy</span>
+                    <span class="val">
+                    {{ result.accuracy }}
+                     </span>
+                </div>
+            </div>
+
+            <!-- Parameters Detailed Specification List -->
+            <div class="spec-details-sheet">
+                
+                <!-- Row 1 -->
+                <div class="spec-row-item">
+                    <div class="spec-icon-box" style="background: #e6f4ea; color: #10b981;"><i class="fa-solid fa-shop"></i></div>
+                    <div class="spec-meta">
+                        <div>
+                            <label>Retail Store</label>
+                            <span>Select retail store</span>
+                        </div>
+                        <span class="right-data">{{ result.store }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="spec-row-item">
+                    <div class="spec-icon-box" style="background: #eef2ff; color: #4f46e5;"><i class="fa-solid fa-truck"></i></div>
+                    <div class="spec-meta">
+                        <div>
+                            <label>Vehicle Type</label>
+                            <span>Select vehicle type</span>
+                        </div>
+                        <span class="right-data">{{ result.vehicle }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="spec-row-item">
+                    <div class="spec-icon-box" style="background: #eff6ff; color: #2563eb;"><i class="fa-solid fa-box"></i></div>
+                    <div class="spec-meta">
+                        <div>
+                            <label>Package Weight</label>
+                            <span>Enter package weight</span>
+                        </div>
+                        <span class="right-data">{{ result.weight }} kg</span>
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="spec-row-item">
+                    <div class="spec-icon-box" style="background: #fff7ed; color: #ea580c;"><i class="fa-solid fa-globe"></i></div>
+                    <div class="spec-meta">
+                        <div>
+                            <label>Distance</label>
+                            <span>Total dynamic path</span>
+                        </div>
+                        <span class="right-data">{{ result.distance }} km</span>
+                    </div>
+                </div>
+
+                <!-- Row 5 -->
+                <div class="spec-row-item">
+                    <div class="spec-icon-box" style="background: #fffbeb; color: #d97706;"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="spec-meta">
+                        <div>
+                            <label>Data Source</label>
+                            <span>Real-time data from Retail Stores</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Horizontal Delivery Progress Timeline Stepper -->
+            <div class="workflow-card">
+                <h3>Delivery Progress</h3>
+                <div class="stepper-timeline">
+                    <div class="step-node">
+                        <div class="step-circle"><i class="fa-solid fa-box-open"></i></div>
+                        <label>Order Confirmed</label>
+                        <i class="fa-solid fa-check step-check-mark"></i>
+                    </div>
+                    <div class="step-node">
+                        <div class="step-circle"><i class="fa-solid fa-store"></i></div>
+                        <label>Picked from Retail Store</label>
+                        <i class="fa-solid fa-check step-check-mark"></i>
+                    </div>
+                    <div class="step-node">
+                        <div class="step-circle"><i class="fa-solid fa-truck-moving"></i></div>
+                        <label>On The Way</label>
+                        <i class="fa-solid fa-check step-check-mark"></i>
+                    </div>
+                    <div class="step-node">
+                        <div class="step-circle"><i class="fa-solid fa-location-dot"></i></div>
+                        <label>Out for Delivery</label>
+                        <i class="fa-solid fa-check step-check-mark"></i>
+                    </div>
+                    <div class="step-node">
+                        <div class="step-circle"><i class="fa-solid fa-circle-check"></i></div>
+                        <label>Delivered</label>
+                        <i class="fa-solid fa-check step-check-mark"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Action Panel Widget Area -->
+            <div class="confirmation-cta-box">
+                <i class="fa-solid fa-shield-halved shield-icon-3d"></i>
+                <div class="confirmation-text-block">
+                    <h4>Confirm Delivery</h4>
+                    <p>Please confirm that the delivery has been completed successfully.</p>
+                </div>
+            </div>
+
+            <!-- Principal Pushable 3D CTA Button -->
+            <button class="primary-3d-button"
+             type="button"
+             onclick="window.location.href='/five'">
+                <i class="fa-solid fa-circle-check"></i>
+                Confirm Delivery
+            </button>
+
+        </div>
+
+        <!-- System Application Footer Bar -->
+        <nav class="docked-tab-nav">
+            <a href="second.html" class="tab-item active-tab">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="third.html" class="tab-item">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span>predict</span>
+            </a>
+            <a href="fourth.html" class="tab-item">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                <span>result</span>
+            </a>
+            <a href="five.html" class="tab-item">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Help</span>
+            </a>
+        </nav>
+    </div>
 <script>
 
-let hours = {{ result.hours }};
-let minutes = {{ result.minutes }};
+    let hours = {{ result.hours }};
+    let minutes = {{ result.minutes }};
 
-let totalSeconds = (hours * 60 + minutes) * 60;
+    let totalSeconds = (hours * 60 + minutes) * 60;
 
-function startTimer(){
+    function startTimer(){
 
     let hrs = Math.floor(totalSeconds / 3600);
     let mins = Math.floor((totalSeconds % 3600) / 60);
@@ -213,14 +724,13 @@ function startTimer(){
         totalSeconds--;
         setTimeout(startTimer,1000);
     } else {
-        document.getElementById("timer").innerHTML = "Delivery Completed Successfully!";
+        document.getElementById("timer").innerHTML =
+        "Delivery Completed Successfully!";
     }
 }
 
 startTimer();
 
 </script>
-
 </body>
-
 </html>
