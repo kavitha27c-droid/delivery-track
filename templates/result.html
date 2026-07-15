@@ -11,35 +11,78 @@
 <style>
 
 body{
+    margin:0;
+    background:#e5e5e5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:Arial,sans-serif;
+}
 
-font-family:Arial;
+.phone{
+    width:360px;
+    height:740px;
+    background:#fff;
+    border:12px solid #222;
+    border-radius:40px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    position:relative;
+}
 
-background:#f2f2f2;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-height:100vh;
-
+.phone::before{
+    content:"";
+    width:120px;
+    height:20px;
+    background:#222;
+    border-radius:20px;
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
 }
 
 .box{
-
-background:white;
-
-padding:30px;
-
-width:500px;
-
-border-radius:10px;
-
-box-shadow:0px 0px 15px gray;
-
+    margin-top:40px;
+    padding:20px;
+    height:calc(100% - 40px);
+    overflow:auto;
+    box-sizing:border-box;
+    background:white;
 }
 
+h2{
+    text-align:center;
+    color:green;
+}
+
+table{
+    width:100%;
+}
+
+td{
+    padding:8px;
+}
+
+.status{
+    font-size:20px;
+    color:green;
+    font-weight:bold;
+    text-align:center;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:green;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
 h2{
 
 text-align:center;
@@ -97,6 +140,8 @@ cursor:pointer;
 </head>
 
 <body>
+
+<div class="phone">
 
 <div class="box">
 
@@ -191,7 +236,9 @@ Predict Again
 
 </form>
 
-</div>
+</div>   
+
+</div>   
 
 <script>
 
