@@ -103,7 +103,6 @@ class Output:
 def home():
     return render_template("index.html")
 
-
 @app.route("/predict", methods=["POST"])
 def predict():
 
@@ -139,7 +138,10 @@ def predict():
         prediction
     )
 
-  return render_template("fourth.html", result=result)
+
+
+    
+    return render_template("fourth.html", result=result)
 
 
 if __name__ == "__main__":
