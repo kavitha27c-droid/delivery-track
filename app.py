@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 import pandas as pd
 import numpy as np
 import joblib
-import time
 
 app = Flask(__name__)
 
@@ -62,30 +61,7 @@ class DeliveryPrediction:
         minutes = int(total_minutes % 60)
 
         return hours, minutes
-class DeliveryTimer:
 
-    def start_timer(self, hours, minutes):
-
-        total_seconds = (hours * 60 + minutes) * 60
-
-        print("\n========== DELIVERY TIMER ==========\n")
-
-        while total_seconds >= 0:
-
-            hrs = total_seconds // 3600
-            mins = (total_seconds % 3600) // 60
-            secs = total_seconds % 60
-
-            print(
-                f"\rRemaining Time : {hrs:02d}:{mins:02d}:{secs:02d}",
-                end=""
-            )
-
-            time.sleep(1)
-
-            total_seconds -= 1
-
-        print("\n\nDelivery Completed Successfully!")
 
 class Output:
 
@@ -162,10 +138,7 @@ def predict():
         distance,
         prediction
     )
-hours, minutes = prediction
 
-timer = DeliveryTimer()
-timer.start_timer(hours, minutes)
     return render_template("result.html", result=result)
 
 
