@@ -1,275 +1,49 @@
-
- 
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-
-<title>Prediction Result</title>
-
-<style>
-
-body{
-    margin:0;
-    background:#e5e5e5;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    font-family:Arial,sans-serif;
-}
-
-.phone{
-    width:360px;
-    height:740px;
-    background:#fff;
-    border:12px solid #222;
-    border-radius:40px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    position:relative;
-}
-
-.phone::before{
-    content:"";
-    width:120px;
-    height:20px;
-    background:#222;
-    border-radius:20px;
-    position:absolute;
-    top:10px;
-    left:50%;
-    transform:translateX(-50%);
-}
-
-.box{
-    margin-top:40px;
-    padding:20px;
-    height:calc(100% - 40px);
-    overflow:auto;
-    box-sizing:border-box;
-    background:white;
-}
-
-h2{
-    text-align:center;
-    color:green;
-}
-
-table{
-    width:100%;
-}
-
-td{
-    padding:8px;
-}
-
-.status{
-    font-size:20px;
-    color:green;
-    font-weight:bold;
-    text-align:center;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    margin-top:20px;
-    background:green;
-    color:white;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    cursor:pointer;
-}
-h2{
-
-text-align:center;
-
-color:green;
-
-}
-
-table{
-
-width:100%;
-
-}
-
-td{
-
-padding:8px;
-
-}
-
-.status{
-
-font-size:20px;
-
-color:green;
-
-font-weight:bold;
-
-text-align:center;
-
-}
-
-button{
-
-width:100%;
-
-padding:12px;
-
-margin-top:20px;
-
-background:green;
-
-color:white;
-
-border:none;
-
-font-size:16px;
-
-cursor:pointer;
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px auto; max-width: 500px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; }
+        .status { font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; }
+        .on-time { background-color: #d4edda; color: #155724; }
+        .slight-delay { background-color: #fff3cd; color: #856404; }
+        .delayed { background-color: #f8d7da; color: #721c24; }
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #0056b3; }
+        .back-btn:hover { text-decoration: underline; }
+    </style>
 </head>
-
 <body>
-
-<div class="phone">
-
-<div class="box">
-
-<h2>SMART DELIVERY RESULT</h2>
-
-<table>
-
-<tr>
-
-<td>Pickup Location</td>
-
-<td>{{result.pickup}}</td>
-
-</tr>
-
-<tr>
-
-<td>Retail Store</td>
-
-<td>{{result.store}}</td>
-
-</tr>
-
-<tr>
-
-<td>Delivery Location</td>
-
-<td>{{result.delivery}}</td>
-
-</tr>
-
-<tr>
-
-<td>Vehicle</td>
-
-<td>{{result.vehicle}}</td>
-
-</tr>
-
-<tr>
-
-<td>Package Weight</td>
-
-<td>{{result.weight}} Kg</td>
-
-</tr>
-
-<tr>
-
-<td>Distance</td>
-
-<td>{{result.distance}} Km</td>
-
-</tr>
-
-<tr>
-
-<td>Estimated Time</td>
-
-<td>{{result.hours}} Hours {{result.minutes}} Minutes</td>
-
-</tr>
-<tr>
-    <td>Delivery Timer</td>
-    <td>
-        <span id="timer"></span>
-    </td>
-</tr>
-<tr>
-
-<td>Prediction Accuracy</td>
-
-<td>{{result.accuracy}}</td>
-
-</tr>
-
-</table>
-
-<p class="status">
-
-Delivery Status : {{result.status}}
-
-</p>
-
-<form action="/">
-
-<button>
-
-Predict Again
-
-</button>
-
-</form>
-
-</div>   
-
-</div>   
-
-<script>
-
-let hours = {{ result.hours }};
-let minutes = {{ result.minutes }};
-
-let totalSeconds = (hours * 60 + minutes) * 60;
-
-function startTimer(){
-
-    let hrs = Math.floor(totalSeconds / 3600);
-    let mins = Math.floor((totalSeconds % 3600) / 60);
-    let secs = totalSeconds % 60;
-
-    document.getElementById("timer").innerHTML =
-        String(hrs).padStart(2,'0') + ":" +
-        String(mins).padStart(2,'0') + ":" +
-        String(secs).padStart(2,'0');
-
-    if(totalSeconds > 0){
-        totalSeconds--;
-        setTimeout(startTimer,1000);
-    } else {
-        document.getElementById("timer").innerHTML = "Delivery Completed Successfully!";
-    }
-}
-
-startTimer();
-
-</script>
-
+    <div class="card">
+        <h2>Delivery Prediction</h2>
+        <hr>
+        
+        <!-- Flask context injection -->
+        <p><strong>Route:</strong> From <em>{{ result.pickup }}</em> ({{ result.store }}) to <em>{{ result.delivery }}</em></p>
+        <p><strong>Vehicle:</strong> {{ result.vehicle }}</p>
+        <p><strong>Weight:</strong> {{ result.weight }} kg | <strong>Distance:</strong> {{ result.distance }} km</p>
+        
+        <h3>Estimated Time:</h3>
+        <p style="font-size: 24px; margin: 10px 0; font-weight: bold;">
+            {{ result.hours }}h {{ result.minutes }}m
+        </p>
+        
+        <!-- Jinja logic block to dynamically render status color -->
+        <p><strong>Status:</strong> 
+            <span class="status 
+                {% if result.status == 'On Time' %}on-time
+                {% elif result.status == 'Slight Delay' %}slight-delay
+                {% else %}delayed{% endif %}">
+                {{ result.status }}
+            </span>
+        </p>
+        <p><small>Prediction Confidence: {{ result.accuracy }}</small></p>
+        
+        <!-- Returns to the home template -->
+        <a href="/" class="back-btn">← Estimate Another Delivery</a>
+    </div>
 </body>
-
 </html>
