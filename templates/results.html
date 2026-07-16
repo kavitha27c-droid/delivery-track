@@ -107,22 +107,15 @@
             <!-- Result Card Viewport -->
             <div class="my-6 space-y-4">
                 
-                <!-- Live Ticking Countdown Display -->
+                <!-- Large Display for Predicted Delivery Time -->
                 <div class="bg-slate-950/60 p-5 rounded-2xl border border-indigo-500/20 text-center shadow-inner relative overflow-hidden">
-                    <div class="absolute top-2 right-3 flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                        <span class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Live</span>
-                    </div>
-                    
-                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Delivery In</p>
-                    
-                    <!-- This ID is targeted by JS to tick down live -->
-                    <h1 id="live-timer" class="text-4xl font-extrabold text-indigo-400 my-3 tracking-wider">
-                        {{ result.hours }}h {{ result.minutes }}m 00s
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Travel Duration</p>
+                    <h1 class="text-4xl font-extrabold text-indigo-400 my-3">
+                        {{ result.hours }}h {{ result.minutes }}m
                     </h1>
                     
                     <!-- Color-Coded Dynamic Status Badge -->
-                    <span id="status-badge" class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 inline-block">
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 inline-block">
                         Status: {{ result.status }}
                     </span>
                 </div>
@@ -162,26 +155,29 @@
         </div>
     </div>
 
-    <!-- JavaScript to power the dynamic 3D tilting & the live countdown -->
+    <!-- JavaScript to power the dynamic 3D tilting mechanics -->
     <script>
         const phone = document.getElementById('phone');
         
-        // --- 1. Dynamic 3D Tilt Mechanics ---
+        // Dynamic tilt mapping function
         document.addEventListener('mousemove', (e) => {
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             
+            // Calculate distance ratios relative to device screen midpoints (Max 12deg tilt)
             const rotateX = ((clientY - centerY) / centerY) * -12; 
             const rotateY = ((clientX - centerX) / centerX) * 12;
 
             phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
 
+        // Softly reset layout rotation back to center position when mouse exits
         document.addEventListener('mouseleave', () => {
             phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
         });
         
+        // Touch orientation support for physical mobile testing
         phone.addEventListener('touchmove', (e) => {
             if(e.touches.length === 1) {
                 const touch = e.touches[0];
@@ -196,41 +192,6 @@
         phone.addEventListener('touchend', () => {
             phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
         });
-
-        // --- 2. Live Countdown Timer Logic ---
-        // Grab the initial total seconds sent from the Flask Output class
-        let totalSeconds = parseInt("{{ result.total_seconds }}") || 0;
-        const timerElement = document.getElementById('live-timer');
-        const statusBadge = document.getElementById('status-badge');
-
-        function startCountdown() {
-            const interval = setInterval(() => {
-                if (totalSeconds <= 0) {
-                    clearInterval(interval);
-                    timerElement.innerText = "Delivered! 🎉";
-                    timerElement.classList.replace('text-indigo-400', 'text-emerald-400');
-                    statusBadge.innerText = "Status: Arrived";
-                    statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 inline-block";
-                    return;
-                }
-
-                totalSeconds--;
-
-                // Calculate remaining hours, minutes, and seconds
-                const hours = Math.floor(totalSeconds / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
-
-                // Format numbers to always show double digits for seconds
-                const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-
-                // Update UI text
-                timerElement.innerText = `${hours}h ${minutes}m ${formattedSeconds}s`;
-            }, 1000);
-        }
-
-        // Initialize the countdown when page loads
-        startCountdown();
     </script>
 </body>
 </html>
