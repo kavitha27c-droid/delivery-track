@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Retail Delivery - Welcome</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #09122c, #1b263b, #0d1b2a);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* 3D Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 720px;
+            background: #121216;
+            border-radius: 44px;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.6),
+                inset 0 0 10px rgba(255, 255, 255, 0.08),
+                0 0 0 12px #22222a,
+                0 0 0 14px #363642;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 25px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* Phone Camera Notch */
+        .mobile-frame::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 20px;
+            background: #22222a;
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+        }
+
+        /* Screen Elements */
+        .screen-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 2;
+            transform: translateZ(40px);
+        }
+
+        /* 3D Floating Icon (Smart Delivery Box Theme) */
+        .icon-3d {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #00b09b, #96c93d);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            box-shadow: 
+                0 15px 30px rgba(0, 176, 155, 0.4),
+                inset 0 4px 6px rgba(255, 255, 255, 0.4),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.2);
+            animation: float 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
+            50% { transform: translateY(-10px) rotateX(12deg) rotateY(-12deg); }
+        }
+
+        /* Typography */
+        h1 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: #9e9ea7;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        /* 3D Action Button Link */
+        .btn-3d {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-3d:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 25px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-3d:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-frame" id="mobileFrame">
+        <div class="screen-body">
+            <!-- 3D Icon Container (Retail Box) -->
+            <div class="icon-3d">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            
+            <!-- Welcome Text -->
+            <h1>Welcome to Smart Delivery Using Retail Store</h1>
+            <p>Connect straight to local retail stores for real-time order tracking, automated inventory, and fast doorstep delivery.</p>
+            
+            <!-- Updated Button Linked to Flask Route /index -->
+            <a href="{{ url_for('index') }}" class="btn-3d">Let's Begin</a>
+        </div>
+    </div>
+
+    <script>
+        // 3D Mouse Movement Tilt Effect
+        const frame = document.getElementById('mobileFrame');
+
+        document.addEventListener('mousemove', (e) => {
+            const rect = frame.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            const xAngle = (-y / rect.height) * 18;
+            const yAngle = (x / rect.width) * 18;
+
+            frame.style.transform = `rotateX(${xAngle}deg) rotateY(${yAngle}deg)`;
+        });
+
+        // Smooth reset when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            frame.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            frame.style.transition = 'transform 0.5s ease-in-out';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            frame.style.transition = 'transform 0.1s ease-out';
+        });
+    </script>
+</body>
+</html>
