@@ -17,8 +17,8 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
-        /* 3D Mobile Device Chassis */
-        .phone-container {
+        /* 3D Dashboard Card Chassis - Converted to be completely fluid and responsive */
+        .card-container {
             transform-style: preserve-3d;
             transition: transform 0.15s ease-out;
             box-shadow: 
@@ -32,6 +32,18 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transform-style: preserve-3d;
+        }
+
+        /* Push components into interactive spatial depth layers */
+        .layer-depth-icon {
+            transform: translateZ(50px) scale(0.9);
+        }
+        .layer-depth-text {
+            transform: translateZ(30px);
+        }
+        .layer-depth-content {
+            transform: translateZ(20px);
         }
 
         /* Volumetric 3D Button Style */
@@ -45,12 +57,12 @@
                 0 4px 0 0 #4338ca,
                 0 8px 16px rgba(99, 102, 241, 0.3);
             transition: all 0.1s ease;
-            transform: translateY(-4px);
+            transform: translateY(-4px) translateZ(40px);
         }
 
         .btn-3d:hover {
             background: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%);
-            transform: translateY(-5px);
+            transform: translateY(-5px) translateZ(45px);
             box-shadow: 
                 0 0 0 1px #4338ca,
                 0 5px 0 0 #4338ca,
@@ -58,7 +70,7 @@
         }
 
         .btn-3d:active {
-            transform: translateY(0px);
+            transform: translateY(0px) translateZ(20px);
             box-shadow: 
                 0 0 0 1px #4338ca,
                 0 0px 0 0 #4338ca,
@@ -69,55 +81,49 @@
         .bubble {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(0,0,0,0) 70%);
             pointer-events: none;
             z-index: 1;
         }
     </style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-4">
+<body class="flex justify-center items-center min-h-screen p-4 sm:p-6 md:p-8">
 
     <!-- Interactive Background Bubbles -->
-    <div class="bubble w-[400px] h-[400px] top-10 left-10 animate-pulse"></div>
-    <div class="bubble w-[300px] h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="bubble w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] top-10 left-10 animate-pulse"></div>
+    <div class="bubble w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
 
-    <!-- 3D Phone Chassis Wrapper -->
-    <div id="phone" class="phone-container w-full max-w-sm h-[780px] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
+    <!-- 3D Fluid Chassis (Perfect match with index.html container scale) -->
+    <div id="interactive-card" class="card-container w-full max-w-md bg-slate-950 rounded-3xl p-2 sm:p-3 border border-slate-800/80 relative z-10 flex flex-col overflow-hidden">
         
-        <!-- Phone Camera Notch -->
-        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-full z-30 flex items-center justify-center border border-slate-800/50">
-            <div class="w-3 h-3 rounded-full bg-slate-900 border border-slate-800 mr-2 flex justify-center items-center">
-                <div class="w-1 h-1 rounded-full bg-blue-500/50"></div>
-            </div>
-            <div class="w-12 h-1 bg-slate-800 rounded-full"></div>
-        </div>
-
         <!-- Glassmorphic Screen Layer -->
-        <div class="glass-screen flex-1 rounded-[40px] px-6 pt-12 pb-6 flex flex-col justify-between overflow-y-auto no-scrollbar z-20">
+        <div class="glass-screen flex-1 rounded-[22px] px-5 py-8 sm:px-6 sm:py-10 flex flex-col justify-between z-20">
             
-            <!-- App Header -->
-            <div class="text-center mt-3">
-                <div class="inline-flex p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 mb-2 shadow-lg shadow-emerald-500/10">
+            <!-- App Header & Labeled 3D Emblem View -->
+            <div class="text-center flex flex-col items-center">
+                <div class="layer-depth-icon inline-flex p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 mb-3 shadow-lg shadow-emerald-500/10 transition-transform duration-300 ease-out">
                     <span class="text-3xl">🎉</span>
                 </div>
-                <h2 class="text-xl font-bold tracking-tight text-white">Prediction Complete</h2>
-                <p class="text-[11px] text-emerald-400 mt-0.5">Calculations processed successfully</p>
+                <div class="layer-depth-text">
+                    <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">Prediction Complete</h2>
+                    <p class="text-xs text-emerald-400 mt-1">Calculations processed successfully</p>
+                </div>
             </div>
 
             <!-- Result Card Viewport -->
-            <div class="my-6 space-y-4">
+            <div class="layer-depth-content my-6 space-y-4">
                 
                 <!-- Live Ticking Countdown Display -->
                 <div class="bg-slate-950/60 p-5 rounded-2xl border border-indigo-500/20 text-center shadow-inner relative overflow-hidden">
-                    <div class="absolute top-2 right-3 flex items-center gap-1">
+                    <div class="absolute top-3 right-3 flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                        <span class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Live</span>
+                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Live</span>
                     </div>
                     
-                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Delivery In</p>
+                    <p class="text-[10px] sm:text-xs text-slate-400 uppercase tracking-widest font-bold">Estimated Delivery In</p>
                     
-                    <!-- This ID is targeted by JS to tick down live -->
-                    <h1 id="live-timer" class="text-4xl font-extrabold text-indigo-400 my-3 tracking-wider">
+                    <!-- Targeted by JS to tick down live -->
+                    <h1 id="live-timer" class="text-3xl sm:text-4xl font-extrabold text-indigo-400 my-3 tracking-wider">
                         {{ result.hours }}h {{ result.minutes }}m 00s
                     </h1>
                     
@@ -128,12 +134,12 @@
                 </div>
 
                 <!-- Parameters breakdown -->
-                <div class="bg-slate-900/40 p-4 rounded-2xl border border-white/5 text-xs space-y-3">
-                    <h3 class="text-[10px] uppercase tracking-wider font-bold text-slate-400 border-b border-white/5 pb-2">Details</h3>
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-white/5 text-xs sm:text-sm space-y-3">
+                    <h3 class="text-[10px] sm:text-xs uppercase tracking-wider font-bold text-slate-400 border-b border-white/5 pb-2">Details</h3>
                     
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400">📍 Route:</span>
-                        <span class="text-white font-medium text-right truncate max-w-[180px]">{{ result.store }} ➔ {{ result.delivery }}</span>
+                    <div class="flex justify-between items-center gap-4">
+                        <span class="text-slate-400 whitespace-nowrap">📍 Route:</span>
+                        <span class="text-white font-medium text-right truncate max-w-[200px]">{{ result.store }} ➔ {{ result.delivery }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-slate-400">🚲 Transport:</span>
@@ -152,19 +158,18 @@
 
             <!-- Dynamic Re-calculate Action Button -->
             <div class="pt-2">
-                <a href="/" class="btn-3d w-full text-white font-bold py-3 text-sm flex items-center justify-center gap-2">
+                <a href="/" class="btn-3d w-full text-white font-bold py-3.5 text-sm sm:text-base flex items-center justify-center gap-2">
                     <span>🔄</span> Run New Prediction
                 </a>
             </div>
 
-            <!-- Device Navigation virtual indicator pill -->
-            <div class="w-24 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
         </div>
     </div>
 
     <!-- JavaScript to power the dynamic 3D tilting & the live countdown -->
     <script>
-        const phone = document.getElementById('phone');
+        const card = document.getElementById('interactive-card');
+        const headerIcon = document.querySelector('.layer-depth-icon');
         
         // --- 1. Dynamic 3D Tilt Mechanics ---
         document.addEventListener('mousemove', (e) => {
@@ -175,30 +180,34 @@
             const rotateX = ((clientY - centerY) / centerY) * -12; 
             const rotateY = ((clientX - centerX) / centerX) * 12;
 
-            phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            
+            if (headerIcon) {
+                headerIcon.style.transform = `translateZ(60px) rotateX(${rotateX * -0.5}deg) rotateY(${rotateY * -0.5}deg)`;
+            }
         });
 
         document.addEventListener('mouseleave', () => {
-            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            if (headerIcon) headerIcon.style.transform = 'translateZ(50px) scale(0.9)';
         });
         
-        phone.addEventListener('touchmove', (e) => {
+        card.addEventListener('touchmove', (e) => {
             if(e.touches.length === 1) {
                 const touch = e.touches[0];
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
                 const rotateX = ((touch.clientY - centerY) / centerY) * -15;
                 const rotateY = ((touch.clientX - centerX) / centerX) * 15;
-                phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             }
         }, { passive: true });
 
-        phone.addEventListener('touchend', () => {
-            phone.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        card.addEventListener('touchend', () => {
+            card.style.transform = 'rotateX(0deg) rotateY(0deg)';
         });
 
         // --- 2. Live Countdown Timer Logic ---
-        // Grab the initial total seconds sent from the Flask Output class
         let totalSeconds = parseInt("{{ result.total_seconds }}") || 0;
         const timerElement = document.getElementById('live-timer');
         const statusBadge = document.getElementById('status-badge');
@@ -216,20 +225,16 @@
 
                 totalSeconds--;
 
-                // Calculate remaining hours, minutes, and seconds
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
                 const seconds = totalSeconds % 60;
 
-                // Format numbers to always show double digits for seconds
                 const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
 
-                // Update UI text
                 timerElement.innerText = `${hours}h ${minutes}m ${formattedSeconds}s`;
             }, 1000);
         }
 
-        // Initialize the countdown when page loads
         startCountdown();
     </script>
 </body>
