@@ -96,7 +96,7 @@
     <div class="bubble w-[400px] h-[400px] top-10 left-10 animate-pulse"></div>
     <div class="bubble w-[300px] h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
 
-    <!-- 3D Phone Chassis Wrapper (Responsive Height Fix) -->
+    <!-- 3D Phone Chassis Wrapper -->
     <div id="phone" class="phone-container w-full max-w-sm min-h-[700px] max-h-[850px] h-[85vh] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
         
         <!-- Phone Camera Notch -->
@@ -131,12 +131,10 @@
                     
                     <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Delivery In</p>
                     
-                    <!-- Flask Template Target ID -->
                     <h1 id="live-timer" class="text-4xl font-extrabold text-indigo-400 my-3 tracking-wider">
                         {{ result.hours }}h {{ result.minutes }}m 00s
                     </h1>
                     
-                    <!-- Color-Coded Dynamic Status Badge -->
                     <span id="status-badge" class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 inline-block">
                         Status: {{ result.status }}
                     </span>
@@ -213,30 +211,45 @@
         });
 
         // --- 2. Live Countdown Timer Logic ---
-        let totalSeconds = parseInt("{{ result.total_seconds }}") || 0;
+        // RECTIFIED: Removed the quotes around the Jinja template variable.
+        let totalSeconds = parseInt({{ result.total_seconds }}) || 0;
         const timerElement = document.getElementById('live-timer');
         const statusBadge = document.getElementById('status-badge');
 
         function startCountdown() {
+            // RECTIFIED: Run verification immediately to prevent flashing a 0s timer if the item arrived instantly
+            if (totalSeconds <= 0) {
+                renderArrivedState();
+                return;
+            }
+
             const interval = setInterval(() => {
+                totalSeconds--;
+
                 if (totalSeconds <= 0) {
                     clearInterval(interval);
-                    timerElement.innerText = "Delivered! 🎉";
-                    timerElement.classList.replace('text-indigo-400', 'text-emerald-400');
-                    statusBadge.innerText = "Status: Arrived";
-                    statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 inline-block";
+                    renderArrivedState();
                     return;
                 }
-
-                totalSeconds--;
 
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
                 const seconds = totalSeconds % 60;
+                
+                // RECTIFIED: Added leading zero strings formatters to minutes and hours as well for alignment stability
+                const formattedHours = hours < 10 ? '0' + hours : hours;
+                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
                 const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
 
-                timerElement.innerText = `${hours}h ${minutes}m ${formattedSeconds}s`;
+                timerElement.innerText = `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
             }, 1000);
+        }
+
+        function renderArrivedState() {
+            timerElement.innerText = "Delivered! 🎉";
+            timerElement.classList.replace('text-indigo-400', 'text-emerald-400');
+            statusBadge.innerText = "Status: Arrived";
+            statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 inline-block";
         }
 
         startCountdown();
