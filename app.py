@@ -128,7 +128,7 @@ def predict():
         prediction
     )
 
-    return render_template("result.html", result=result)
+    return render_template("results.html", result=result)
 
 
 if __name__ == "__main__":
