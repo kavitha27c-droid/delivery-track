@@ -7,18 +7,12 @@
     <!-- Tailwind CSS for modern structure -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Reset and Setup the 3D space perspective */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Setup the 3D space perspective */
         body {
             background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #03001e 100%);
             min-height: 100vh;
             perspective: 1200px;
-            overflow: hidden;
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
@@ -38,15 +32,6 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        /* Hide Scrollbar for clean aesthetics */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
 
         /* Volumetric 3D Button Style */
@@ -90,14 +75,14 @@
         }
     </style>
 </head>
-<body class="flex justify-center items-center w-screen h-screen p-4 overflow-hidden">
+<body class="flex justify-center items-center min-h-screen p-4">
 
     <!-- Interactive Background Bubbles -->
     <div class="bubble w-[400px] h-[400px] top-10 left-10 animate-pulse"></div>
     <div class="bubble w-[300px] h-[300px] bottom-10 right-10 animate-pulse" style="animation-delay: 2s;"></div>
 
     <!-- 3D Phone Chassis Wrapper -->
-    <div id="phone" class="phone-container w-full max-w-sm min-h-[700px] max-h-[850px] h-[85vh] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
+    <div id="phone" class="phone-container w-full max-w-sm h-[780px] bg-slate-950 rounded-[48px] p-3 border-4 border-slate-800 relative z-10 flex flex-col overflow-hidden">
         
         <!-- Phone Camera Notch -->
         <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-full z-30 flex items-center justify-center border border-slate-800/50">
@@ -120,7 +105,7 @@
             </div>
 
             <!-- Result Card Viewport -->
-            <div class="my-4 space-y-4">
+            <div class="my-6 space-y-4">
                 
                 <!-- Live Ticking Countdown Display -->
                 <div class="bg-slate-950/60 p-5 rounded-2xl border border-indigo-500/20 text-center shadow-inner relative overflow-hidden">
@@ -131,10 +116,12 @@
                     
                     <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Estimated Delivery In</p>
                     
+                    <!-- This ID is targeted by JS to tick down live -->
                     <h1 id="live-timer" class="text-4xl font-extrabold text-indigo-400 my-3 tracking-wider">
                         {{ result.hours }}h {{ result.minutes }}m 00s
                     </h1>
                     
+                    <!-- Color-Coded Dynamic Status Badge -->
                     <span id="status-badge" class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 inline-block">
                         Status: {{ result.status }}
                     </span>
@@ -144,9 +131,9 @@
                 <div class="bg-slate-900/40 p-4 rounded-2xl border border-white/5 text-xs space-y-3">
                     <h3 class="text-[10px] uppercase tracking-wider font-bold text-slate-400 border-b border-white/5 pb-2">Details</h3>
                     
-                    <div class="flex justify-between items-center gap-2">
-                        <span class="text-slate-400 whitespace-nowrap">📍 Route:</span>
-                        <span class="text-white font-medium text-right truncate flex-1">{{ result.store }} ➔ {{ result.delivery }}</span>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">📍 Route:</span>
+                        <span class="text-white font-medium text-right truncate max-w-[180px]">{{ result.store }} ➔ {{ result.delivery }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-slate-400">🚲 Transport:</span>
@@ -171,7 +158,7 @@
             </div>
 
             <!-- Device Navigation virtual indicator pill -->
-            <div class="w-24 h-1 bg-white/20 rounded-full mx-auto mt-4"></div>
+            <div class="w-24 h-1 bg-white/20 rounded-full mx-auto mt-2"></div>
         </div>
     </div>
 
@@ -211,47 +198,38 @@
         });
 
         // --- 2. Live Countdown Timer Logic ---
-        // RECTIFIED: Removed the quotes around the Jinja template variable.
-        let totalSeconds = parseInt({{ result.total_seconds }}) || 0;
+        // Grab the initial total seconds sent from the Flask Output class
+        let totalSeconds = parseInt("{{ result.total_seconds }}") || 0;
         const timerElement = document.getElementById('live-timer');
         const statusBadge = document.getElementById('status-badge');
 
         function startCountdown() {
-            // RECTIFIED: Run verification immediately to prevent flashing a 0s timer if the item arrived instantly
-            if (totalSeconds <= 0) {
-                renderArrivedState();
-                return;
-            }
-
             const interval = setInterval(() => {
-                totalSeconds--;
-
                 if (totalSeconds <= 0) {
                     clearInterval(interval);
-                    renderArrivedState();
+                    timerElement.innerText = "Delivered! 🎉";
+                    timerElement.classList.replace('text-indigo-400', 'text-emerald-400');
+                    statusBadge.innerText = "Status: Arrived";
+                    statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 inline-block";
                     return;
                 }
 
+                totalSeconds--;
+
+                // Calculate remaining hours, minutes, and seconds
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
                 const seconds = totalSeconds % 60;
-                
-                // RECTIFIED: Added leading zero strings formatters to minutes and hours as well for alignment stability
-                const formattedHours = hours < 10 ? '0' + hours : hours;
-                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+                // Format numbers to always show double digits for seconds
                 const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
 
-                timerElement.innerText = `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
+                // Update UI text
+                timerElement.innerText = `${hours}h ${minutes}m ${formattedSeconds}s`;
             }, 1000);
         }
 
-        function renderArrivedState() {
-            timerElement.innerText = "Delivered! 🎉";
-            timerElement.classList.replace('text-indigo-400', 'text-emerald-400');
-            statusBadge.innerText = "Status: Arrived";
-            statusBadge.className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 inline-block";
-        }
-
+        // Initialize the countdown when page loads
         startCountdown();
     </script>
 </body>
