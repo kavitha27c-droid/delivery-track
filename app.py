@@ -13,7 +13,6 @@ class DataLoader:
             data = pd.read_csv("retail_delivery.csv")
             return data
         except Exception:
-            # Silently handle missing CSV files and return None
             return None
 
 
@@ -47,7 +46,6 @@ class DeliveryPrediction:
         else:
             total_minutes += 40
 
-        # Prevent delivery calculations from going below 0 minutes
         if total_minutes < 0:
             total_minutes = 0
 
@@ -94,6 +92,12 @@ def index():
     return render_template("index.html")
 
 
+# === PWA Offline Route Added Here ===
+@app.route("/offline.html")
+def offline():
+    return render_template("offline.html")
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
@@ -102,7 +106,6 @@ def predict():
         delivery = request.form["delivery"]
         vehicle = request.form["vehicle"]
         
-        # Safely convert form data to float to prevent server-side crashes
         weight = float(request.form["weight"])
         distance = float(request.form["distance"])
     except (KeyError, ValueError):
@@ -112,7 +115,6 @@ def predict():
     if not validate.validate(weight, distance):
         return "Invalid Weight or Distance. Values must be greater than 0.", 400
 
-    # Read from dataset if available
     loader = DataLoader()
     loader.load_data()
 
