@@ -3,7 +3,6 @@ const CACHE_NAME = 'smart-delivery-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index',
-  '/offline.html',
   '/static/manifest.json'
 ];
 
