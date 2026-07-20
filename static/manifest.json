@@ -15,7 +15,20 @@
       "src": "/static/icon_152.png",
       "sizes": "152x152",
       "type": "image/png"
-    }
-    
-  ]
+    } 
+  ],
+  "screenshots": [
+  {
+    "src": "/static/screenshots/desktop.png",
+    "sizes": "1280x720",
+    "type": "image/png",
+    "form_factor": "wide"
+  },
+  {
+    "src": "/static/screenshots/mobile.png",
+    "sizes": "720x1280",
+    "type": "image/png"
+  }
+]
+
 }
