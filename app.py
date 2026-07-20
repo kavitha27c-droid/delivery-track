@@ -98,6 +98,11 @@ def offline():
     return render_template("offline.html")
 
 
+@app.route('/sw.js')
+def sw():
+    return send_from_directory('.', 'sw.js')
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
