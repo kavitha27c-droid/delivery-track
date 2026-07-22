@@ -2,11 +2,13 @@
   "id": "/",
   "name": "Smart Retail Delivery",
   "short_name": "SmartDelivery",
+  "description": "Smart Retail Delivery to analyze travel time instantly.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay"],
   "background_color": "#09122c",
   "theme_color": "#09122c",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/static/icon_192.png",
