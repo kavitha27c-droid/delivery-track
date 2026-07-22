@@ -146,6 +146,25 @@
     </style>
 </head>
 <body>
+     <!-- ==========================================
+       PWA Install Overlay Modal
+       ========================================== -->
+    <div id="install-overlay">
+        <div class="install-card">
+            <button id="btn-install-dismiss" class="close-btn" aria-label="Dismiss installation modal">✕</button>
+            <h2 class="text-xl font-bold text-slate-900 mb-2">Install SmartScreen AI</h2>
+            <p class="text-slate-600 text-sm">Install this app on your home screen for a faster experience and offline support.</p>
+            
+            <button id="btn-install-app" class="install-btn" disabled>
+                Install App
+            </button>
+            <button id="btn-continue-browser" class="continue-btn">
+                Continue in Browser
+            </button>
+            
+            <div id="install-overlay-status"></div>
+        </div>
+    </div>
 
     <div class="mobile-frame" id="mobileFrame">
         <div class="screen-body">
@@ -199,6 +218,87 @@
     });
   }
 </script>
+     <!--  PWA Install Prompt & Overlay Interface -->
+    <script>
+        (() => {
+            const overlay = document.getElementById("install-overlay");
+            const installBtn = document.getElementById("btn-install-app");
+            const statusEl = document.getElementById("install-overlay-status");
+            const dismissBtn = document.getElementById("btn-install-dismiss");
+            const continueBtn = document.getElementById("btn-continue-browser");
+
+            const DISMISS_KEY = "smartscreen-install-dismissed";
+            let deferredPrompt = null;
+
+            function isStandalone() {
+                return (
+                    window.matchMedia("(display-mode: standalone)").matches ||
+                    window.navigator.standalone === true
+                );
+            }
+
+            function showOverlay() {
+                overlay.style.display = "flex";
+            }
+
+            function hideOverlay() {
+                overlay.style.display = "none";
+            }
+
+            // Initialization logic
+            if (!isStandalone() && sessionStorage.getItem(DISMISS_KEY) !== "1") {
+                showOverlay();
+            }
+
+            // Capture the install prompt event
+            window.addEventListener("beforeinstallprompt", (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.disabled = false;
+                console.log("Install Prompt Ready");
+            });
+
+            // Handle actual install flow
+            installBtn.addEventListener("click", async () => {
+                if (!deferredPrompt) {
+                    statusEl.innerHTML = "One-tap install isn't available.<br>Please use your browser menu and choose <b>Install App</b>.";
+                    return;
+                }
+
+                installBtn.disabled = true;
+                deferredPrompt.prompt();
+
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log("Install Result:", outcome);
+
+                if (outcome === "accepted") {
+                    statusEl.textContent = "Installation successful.";
+                } else {
+                    statusEl.textContent = "Installation cancelled.";
+                    installBtn.disabled = false;
+                }
+
+                deferredPrompt = null;
+            });
+
+            window.addEventListener("appinstalled", () => {
+                console.log("PWA Installed Successfully");
+                hideOverlay();
+                deferredPrompt = null;
+            });
+
+            // Dismiss interactions
+            dismissBtn.addEventListener("click", () => {
+                sessionStorage.setItem(DISMISS_KEY, "1");
+                hideOverlay();
+            });
+
+            continueBtn.addEventListener("click", () => {
+                sessionStorage.setItem(DISMISS_KEY, "1");
+                hideOverlay();
+            });
+        })();
+    </script>
 
 </body>
 </html>
