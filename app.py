@@ -5,7 +5,6 @@ import joblib
 import time
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "prod-screening-system-token-9988")
 
 class DataLoader:
     def load_data(self):
